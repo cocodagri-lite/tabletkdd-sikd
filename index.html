@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data TKDD — Provinsi Riau 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f2eb;
+      --bg2: #edeae0;
+      --ink: #1a1814;
+      --ink2: #5a5750;
+      --ink3: #9a9590;
+      --accent: #c45c2a;
+      --accent-light: #f0e0d4;
+      --border: rgba(26,24,20,0.12);
+      --border2: rgba(26,24,20,0.06);
+      --radius: 4px;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Fraunces', Georgia, serif;
+    }
+
+    body {
+      font-family: var(--mono);
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem 2rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-weight: 600;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .header-sub {
+      font-size: 13px;
+      color: var(--ink2);
+    }
+
+    .main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Summary cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .summary-card {
+      background: var(--bg);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .summary-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .summary-unit {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink2);
+      margin-top: 2px;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 360px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink3);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 9px 12px 9px 34px;
+      font-family: var(--mono);
+      font-size: 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    .row-count {
+      font-size: 12px;
+      color: var(--ink3);
+      margin-left: auto;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    thead tr {
+      background: var(--bg2);
+    }
+
+    th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink2);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    th.num { text-align: right; }
+
+    th:hover { color: var(--accent); }
+
+    th .sort-icon { margin-left: 4px; opacity: 0.4; }
+    th.asc .sort-icon::after { content: '↑'; }
+    th.desc .sort-icon::after { content: '↓'; }
+    th:not(.asc):not(.desc) .sort-icon::after { content: '↕'; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border2);
+      transition: background 0.1s;
+    }
+
+    tbody tr:hover { background: var(--accent-light); }
+    tbody tr:last-child { border-bottom: none; }
+
+    td {
+      padding: 9px 14px;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    td.zero { color: var(--ink3); }
+
+    /* Status */
+    #status {
+      padding: 3rem;
+      text-align: center;
+      font-size: 13px;
+      color: var(--ink2);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error { color: #c0392b; }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 11px;
+      color: var(--ink3);
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .updated {
+      display: inline-block;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3px 10px;
+      font-size: 11px;
+      color: var(--ink3);
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="header-label">Kementerian Keuangan RI — DJPK</p>
+  <h1>Transfer ke Daerah &amp; Dana Desa</h1>
+  <p class="header-sub">Provinsi Riau &nbsp;·&nbsp; Tahun Anggaran 2025</p>
+</header>
+
+<main class="main">
+  <div id="summary-grid" class="summary-grid" style="display:none;"></div>
+
+  <div id="status">
+    <div class="spinner"></div>
+    <p>Memuat data...</p>
+  </div>
+
+  <div id="table-section" style="display:none;">
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search" placeholder="Cari nama daerah atau jenis dana..." />
+      </div>
+      <span class="row-count" id="row-count"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead id="thead"></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Data bersumber dari <a href="https://djpk.kemenkeu.go.id/portal/data/tkdd?tahun=2025&provinsi=14&pemda=00" target="_blank">djpk.kemenkeu.go.id</a>
+  &nbsp;·&nbsp; Diperbarui otomatis setiap hari via GitHub Actions
+  <br><br>
+  <span id="last-updated"></span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+  let allRows = [], headers = [], numCols = [], sortCol = -1, sortDir = 1;
+
+  function fmt(val) {
+    const n = parseFloat(String(val).replace(/,/g, ''));
+    if (isNaN(n)) return val || '-';
+    return new Intl.NumberFormat('id-ID').format(Math.round(n));
+  }
+
+  function isNum(idx) {
+    return allRows.slice(0, 10).every(r => {
+      const v = r[idx];
+      return v === '' || v == null || !isNaN(parseFloat(String(v).replace(/,/g, '')));
+    });
+  }
+
+  function getNum(row, idx) {
+    return parseFloat(String(row[idx]).replace(/,/g, '')) || 0;
+  }
+
+  function renderSummary() {
+    const grid = document.getElementById('summary-grid');
+    const numIdxs = numCols.map((b, i) => b ? i : -1).filter(i => i >= 0);
+    const cards = numIdxs.slice(0, 5).map(i => {
+      const total = allRows.reduce((s, r) => s + getNum(r, i), 0);
+      const t = total / 1e12;
+      const display = t >= 0.01 ? t.toFixed(2) : (total / 1e9).toFixed(2);
+      const unit = t >= 0.01 ? 'Triliun Rupiah' : 'Miliar Rupiah';
+      return `<div class="summary-card">
+        <p class="summary-label">${headers[i]}</p>
+        <p class="summary-value">${display}</p>
+        <p class="summary-unit">${unit}</p>
+      </div>`;
+    }).join('');
+    grid.innerHTML = cards;
+    grid.style.display = 'grid';
+  }
+
+  function renderHead() {
+    const thead = document.getElementById('thead');
+    thead.innerHTML = '<tr>' + headers.map((h, i) => {
+      const cls = numCols[i] ? 'num' : '';
+      const sortCls = sortCol === i ? (sortDir === 1 ? 'asc' : 'desc') : '';
+      return `<th class="${cls} ${sortCls}" data-col="${i}">${h}<span class="sort-icon"></span></th>`;
+    }).join('') + '</tr>';
+
+    thead.querySelectorAll('th').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = parseInt(th.dataset.col);
+        if (sortCol === col) sortDir *= -1;
+        else { sortCol = col; sortDir = 1; }
+        renderTable(currentFiltered());
+        renderHead();
+      });
+    });
+  }
+
+  function currentFiltered() {
+    const q = document.getElementById('search').value.toLowerCase();
+    return q ? allRows.filter(r => r.some(c => String(c).toLowerCase().includes(q))) : allRows;
+  }
+
+  function renderTable(rows) {
+    const sorted = [...rows].sort((a, b) => {
+      if (sortCol < 0) return 0;
+      const av = numCols[sortCol] ? getNum(a, sortCol) : String(a[sortCol]);
+      const bv = numCols[sortCol] ? getNum(b, sortCol) : String(b[sortCol]);
+      return av < bv ? -sortDir : av > bv ? sortDir : 0;
+    });
+
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = sorted.map(row =>
+      '<tr>' + row.map((cell, i) => {
+        const n = getNum(row, i);
+        const cls = numCols[i] ? (n === 0 ? 'num zero' : 'num') : '';
+        return `<td class="${cls}">${numCols[i] ? fmt(cell) : (cell || '-')}</td>`;
+      }).join('') + '</tr>'
+    ).join('');
+
+    document.getElementById('row-count').textContent = `${sorted.length} dari ${allRows.length} baris`;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('search').addEventListener('input', () => {
+      renderTable(currentFiltered());
+    });
+
+    fetch('data.csv')
+      .then(r => {
+        if (!r.ok) throw new Error('File data.csv tidak ditemukan (HTTP ' + r.status + ')');
+        return r.text();
+      })
+      .then(csv => {
+        const result = Papa.parse(csv.trim(), { skipEmptyLines: true });
+        if (!result.data || result.data.length < 2) throw new Error('Data kosong');
+
+        headers = result.data[0];
+        allRows = result.data.slice(1);
+        numCols = headers.map((_, i) => isNum(i));
+
+        renderSummary();
+        renderHead();
+        renderTable(allRows);
+
+        document.getElementById('status').style.display = 'none';
+        document.getElementById('table-section').style.display = 'block';
+
+        const now = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('last-updated').textContent = 'Halaman dimuat: ' + now;
+      })
+      .catch(err => {
+        document.getElementById('status').innerHTML =
+          `<p class="error">&#9888; ${err.message}</p>
+           <p style="margin-top:8px; font-size:12px; color:var(--ink3);">
+             Pastikan file <code>data.csv</code> ada di folder yang sama, atau jalankan GitHub Actions terlebih dahulu.
+           </p>`;
+      });
+  });
+</script>
+</body>
+</html>

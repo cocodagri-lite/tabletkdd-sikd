@@ -1,0 +1,33 @@
+name: Update Data TKDD
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Download data CSV dari DJPK
+        run: |
+          curl -L "https://djpk.kemenkeu.go.id/portal/csv?type=tkdd&tahun=2025&provinsi=14&pemda=00" \
+            -o data.csv \
+            --fail \
+            --silent \
+            --show-error
+
+      - name: Commit dan push data terbaru
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.csv
+          git diff --cached --quiet || git commit -m "Auto-update data TKDD $(date +'%Y-%m-%d')"
+          git push
